@@ -8,7 +8,7 @@ const MOCK_MODE = import.meta.env.VITE_ENABLE_MOCK_MODE === 'true';
 
 export const ZohoService = {
     async submitLead(leadData) {
-        console.log("🚀 Submitting Lead to Zoho:", leadData);
+        // console.log("🚀 Submitting Lead to Zoho:", leadData);
 
         if (MOCK_MODE) {
             console.log("⚠️ Mock Mode Enabled: Simulating success response.");
