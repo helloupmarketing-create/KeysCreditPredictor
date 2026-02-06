@@ -1,0 +1,104 @@
+:root {
+  /* Brand Colors */
+  --color-primary: #BEB198;
+  --color-accent: #0066CC;
+  --color-bg: #F0F2F5;
+  /* Slightly off-white for glass contrast */
+  --color-text: #3C3C3C;
+  --color-text-heading: #1A1A1A;
+
+  /* Glassmorphism Tokens */
+  --glass-bg: rgba(255, 255, 255, 0.7);
+  --glass-border: 1px solid rgba(255, 255, 255, 0.5);
+  --glass-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.07);
+  --glass-blur: blur(12px);
+
+  /* Typography */
+  --font-heading: 'Clarkson', 'Georgia', serif;
+  /* Fallback to Georgia if Clarkson not loaded */
+  --font-body: 'Inter', system-ui, sans-serif;
+  --radius-md: 10px;
+}
+
+body {
+  margin: 0;
+  font-family: var(--font-body);
+  background-color: var(--color-bg);
+  background-image:
+    radial-gradient(at 0% 0%, rgba(190, 177, 152, 0.3) 0px, transparent 50%),
+    radial-gradient(at 100% 100%, rgba(0, 102, 204, 0.1) 0px, transparent 50%);
+  background-attachment: fixed;
+  color: var(--color-text);
+  -webkit-font-smoothing: antialiased;
+}
+
+h1,
+h2,
+h3,
+h4 {
+  font-family: var(--font-heading);
+  color: var(--color-text-heading);
+  font-weight: 600;
+}
+
+/* Glass Card Utility */
+.glass-panel {
+  background: var(--glass-bg);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  border: var(--glass-border);
+  box-shadow: var(--glass-shadow);
+  border-radius: var(--radius-md);
+}
+
+/* Button Utilities */
+.btn-primary {
+  background-color: var(--color-primary);
+  color: #000;
+  border: none;
+  padding: 12px 24px;
+  border-radius: var(--radius-md);
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(190, 177, 152, 0.4);
+}
+
+.btn-secondary {
+  background: transparent;
+  border: 1px solid #000;
+  color: #000;
+  padding: 12px 24px;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.btn-secondary:hover {
+  background: rgba(0, 0, 0, 0.05);
+}
+
+/* Form Inputs */
+input,
+select {
+  width: 100%;
+  padding: 12px;
+  border-radius: var(--radius-md);
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  background: rgba(255, 255, 255, 0.8);
+  font-family: var(--font-body);
+  font-size: 16px;
+  transition: border-color 0.2s;
+  box-sizing: border-box;
+  /* Important for padding */
+}
+
+input:focus,
+select:focus {
+  outline: none;
+  border-color: var(--color-accent);
+}
