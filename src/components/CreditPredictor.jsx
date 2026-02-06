@@ -2,6 +2,9 @@ import React, { useState } from 'react';
 import { calculateProjection } from '../utils/creditLogic';
 import { ZohoService } from '../services/ZohoService';
 
+import ReCAPTCHA from 'react-google-recaptcha';
+import { parsePhoneNumber } from 'libphonenumber-js';
+
 const CreditPredictor = () => {
     const [step, setStep] = useState(1);
     const [loading, setLoading] = useState(false);
@@ -16,10 +19,25 @@ const CreditPredictor = () => {
     });
     const [result, setResult] = useState(null);
     const [priceEstimate, setPriceEstimate] = useState(null);
+    const [captchaToken, setCaptchaToken] = useState(null);
+    const [phoneError, setPhoneError] = useState('');
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
         setFormData(prev => ({ ...prev, [name]: value }));
+
+        if (name === 'phone') {
+            try {
+                const phoneNumber = parsePhoneNumber(value, 'US');
+                if (phoneNumber && phoneNumber.isValid()) {
+                    setPhoneError('');
+                } else {
+                    setPhoneError('Invalid phone number format');
+                }
+            } catch (error) {
+                // Allow partial typing without error bombarding, check on blur or submit
+            }
+        }
     };
 
     const handleCheckboxChange = (item) => {
@@ -31,10 +49,30 @@ const CreditPredictor = () => {
         });
     };
 
-    const nextStep = () => setStep(prev => prev + 1);
+    const nextStep = () => {
+        if (step === 1) {
+            // Validate Phone
+            try {
+                const phoneNumber = parsePhoneNumber(formData.phone, 'US');
+                if (!phoneNumber || !phoneNumber.isValid()) {
+                    setPhoneError('Please enter a valid US phone number.');
+                    return;
+                }
+            } catch (error) {
+                setPhoneError('Please enter a valid US phone number.');
+                return;
+            }
+        }
+        setStep(prev => prev + 1);
+    };
     const prevStep = () => setStep(prev => prev - 1);
 
     const handleSubmit = async () => {
+        if (!captchaToken) {
+            alert("Please complete the verify check.");
+            return;
+        }
+
         setStep(4); // Loading state UI
         setLoading(true);
 
@@ -109,7 +147,16 @@ const CreditPredictor = () => {
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', marginTop: '20px' }}>
                         <input name="firstName" placeholder="First Name" value={formData.firstName} onChange={handleInputChange} />
                         <input name="email" placeholder="Email Address" value={formData.email} onChange={handleInputChange} />
-                        <input name="phone" placeholder="Phone Number" value={formData.phone} onChange={handleInputChange} />
+                        <div>
+                            <input
+                                name="phone"
+                                placeholder="Phone Number"
+                                value={formData.phone}
+                                onChange={handleInputChange}
+                                style={{ width: '100%', borderColor: phoneError ? 'red' : '#ddd' }}
+                            />
+                            {phoneError && <small style={{ color: 'red' }}>{phoneError}</small>}
+                        </div>
                         <button className="btn-primary" onClick={nextStep} style={{ marginTop: '10px' }}>Next: Your Profile</button>
                     </div>
                 </div>
@@ -169,9 +216,15 @@ const CreditPredictor = () => {
                             </button>
                         ))}
                     </div>
+                    <div style={{ marginTop: '20px', display: 'flex', justifyContent: 'center' }}>
+                        <ReCAPTCHA
+                            sitekey={import.meta.env.VITE_RECAPTCHA_SITE_KEY}
+                            onChange={(token) => setCaptchaToken(token)}
+                        />
+                    </div>
                     <div style={{ display: 'flex', gap: '10px', marginTop: '30px' }}>
                         <button className="btn-secondary" onClick={prevStep}>Back</button>
-                        <button className="btn-primary" onClick={handleSubmit}>Analyze Now</button>
+                        <button className="btn-primary" onClick={handleSubmit} disabled={!captchaToken}>Analyze Now</button>
                     </div>
                 </div>
             )}
