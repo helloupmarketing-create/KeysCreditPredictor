@@ -217,10 +217,17 @@ const CreditPredictor = () => {
                         ))}
                     </div>
                     <div style={{ marginTop: '20px', display: 'flex', justifyContent: 'center' }}>
-                        <ReCAPTCHA
-                            sitekey={import.meta.env.VITE_RECAPTCHA_SITE_KEY}
-                            onChange={(token) => setCaptchaToken(token)}
-                        />
+                        {import.meta.env.VITE_RECAPTCHA_SITE_KEY ? (
+                            <ReCAPTCHA
+                                sitekey={import.meta.env.VITE_RECAPTCHA_SITE_KEY}
+                                onChange={(token) => setCaptchaToken(token)}
+                            />
+                        ) : (
+                            <div style={{ color: 'red', fontSize: '12px', border: '1px solid red', padding: '10px' }}>
+                                ⚠️ <strong>Configuration Error</strong>: ReCAPTCHA Site Key is missing.<br />
+                                Please add <code>VITE_RECAPTCHA_SITE_KEY</code> to Vercel Environment Variables.
+                            </div>
+                        )}
                     </div>
                     <div style={{ display: 'flex', gap: '10px', marginTop: '30px' }}>
                         <button className="btn-secondary" onClick={prevStep}>Back</button>
