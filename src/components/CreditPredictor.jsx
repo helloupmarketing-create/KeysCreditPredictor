@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { calculateProjection } from '../utils/creditLogic';
 import { ZohoService } from '../services/ZohoService';
 
-import ReCAPTCHA from 'react-google-recaptcha';
+
 import { parsePhoneNumber } from 'libphonenumber-js';
 
 const CreditPredictor = () => {
@@ -19,7 +19,7 @@ const CreditPredictor = () => {
     });
     const [result, setResult] = useState(null);
     const [priceEstimate, setPriceEstimate] = useState(null);
-    const [captchaToken, setCaptchaToken] = useState(null);
+
     const [phoneError, setPhoneError] = useState('');
 
     const handleInputChange = (e) => {
@@ -68,10 +68,7 @@ const CreditPredictor = () => {
     const prevStep = () => setStep(prev => prev - 1);
 
     const handleSubmit = async () => {
-        if (!captchaToken) {
-            alert("Please complete the verify check.");
-            return;
-        }
+
 
         setStep(4); // Loading state UI
         setLoading(true);
@@ -217,21 +214,11 @@ const CreditPredictor = () => {
                         ))}
                     </div>
                     <div style={{ marginTop: '20px', display: 'flex', justifyContent: 'center' }}>
-                        {import.meta.env.VITE_RECAPTCHA_SITE_KEY ? (
-                            <ReCAPTCHA
-                                sitekey={import.meta.env.VITE_RECAPTCHA_SITE_KEY}
-                                onChange={(token) => setCaptchaToken(token)}
-                            />
-                        ) : (
-                            <div style={{ color: 'red', fontSize: '12px', border: '1px solid red', padding: '10px' }}>
-                                ⚠️ <strong>Configuration Error</strong>: ReCAPTCHA Site Key is missing.<br />
-                                Please add <code>VITE_RECAPTCHA_SITE_KEY</code> to Vercel Environment Variables.
-                            </div>
-                        )}
+
                     </div>
                     <div style={{ display: 'flex', gap: '10px', marginTop: '30px' }}>
                         <button className="btn-secondary" onClick={prevStep}>Back</button>
-                        <button className="btn-primary" onClick={handleSubmit} disabled={!captchaToken}>Analyze Now</button>
+                        <button className="btn-primary" onClick={handleSubmit}>Analyze Now</button>
                     </div>
                 </div>
             )}
