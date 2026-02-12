@@ -177,7 +177,7 @@ const CreditPredictor = () => {
 
                     <p>What's holding you back? (Select all that apply)</p>
                     <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
-                        {['Collections', 'Charge Offs', 'Late Payments', 'Inquiries', 'Bankruptcy', 'Repos'].map(item => (
+                        {['Collections', 'Charge Offs', 'Late Payments', 'Inquiries', 'Bankruptcy', 'Repos', 'Child Support', 'High Balances'].map(item => (
                             <label key={item} style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer' }}>
                                 <input
                                     type="checkbox"
@@ -240,54 +240,75 @@ const CreditPredictor = () => {
             {/* Step 5: Results */}
             {step === 5 && result && (
                 <div style={{ textAlign: 'center' }}>
-                    <h3>Good News, {formData.firstName}!</h3>
-                    <p>Based on our analysis, your score could reach:</p>
-
-                    <div style={{
-                        fontSize: '64px', fontWeight: 'bold', color: 'var(--color-primary)',
-                        textShadow: '0 2px 10px rgba(190, 177, 152, 0.3)', margin: '10px 0'
-                    }}>
-                        {result.projectedScore}
-                    </div>
-
-                    <div style={{ background: 'rgba(0,102,204,0.1)', padding: '15px', borderRadius: '10px', marginBottom: '20px' }}>
-                        <span style={{ color: 'var(--color-accent)', fontWeight: 'bold' }}>+{result.increase} Points</span>
-                        <span style={{ margin: '0 10px' }}>in</span>
-                        <span style={{ fontWeight: 'bold' }}>{result.timeframe}</span>
-                    </div>
-
-                    <p style={{ fontSize: '14px', color: '#666', marginBottom: '30px' }}>
-                        We identified {result.details.length} factors holding you back.
-                        We can help you remove them.
-                    </p>
-
-                    {priceEstimate && (
-                        <div style={{ marginBottom: '25px', padding: '15px', border: '1px solid var(--color-primary)', borderRadius: '10px' }}>
-                            <small style={{ display: 'block', textTransform: 'uppercase', letterSpacing: '1px', fontWeight: 'bold', color: '#666' }}>Estimated Cost</small>
-                            <span style={{ fontSize: '24px', fontWeight: 'bold', color: '#1A1A1A' }}>{priceEstimate}</span>
-                            {priceEstimate.includes('FREE') && <div style={{ fontSize: '12px', marginTop: '5px' }}>*Standard fees waived for AZ Home Buyers.</div>}
+                    {result.disqualified ? (
+                        /* Disqualified View */
+                        <div style={{ padding: '20px', background: '#fff5f5', borderRadius: '10px', border: '1px solid #fed7d7' }}>
+                            <h3 style={{ color: '#c53030' }}>We're Sorry, {formData.firstName}</h3>
+                            <p style={{ color: '#2d3748', margin: '20px 0', lineHeight: '1.6' }}>
+                                Based on the items you selected ({formData.negativeItems.join(', ')}),
+                                we are unable to assist you at this time.
+                            </p>
+                            <p style={{ fontSize: '14px', color: '#718096' }}>
+                                We specialize in removing inaccurate negative items such as collections, charge-offs, and bankruptcies.
+                                We generally cannot help with legitimate late payments or high credit card balances.
+                            </p>
+                            <button className="btn-secondary" style={{ width: '100%', marginTop: '20px' }} onClick={() => window.location.reload()}>
+                                Start Over
+                            </button>
                         </div>
+                    ) : (
+                        /* Qualified View */
+                        <>
+                            <h3>Good News, {formData.firstName}!</h3>
+                            <p>Based on our analysis, your score could reach:</p>
+
+                            <div style={{
+                                fontSize: '64px', fontWeight: 'bold', color: 'var(--color-primary)',
+                                textShadow: '0 2px 10px rgba(190, 177, 152, 0.3)', margin: '10px 0'
+                            }}>
+                                {result.projectedScore}
+                            </div>
+
+                            <div style={{ background: 'rgba(0,102,204,0.1)', padding: '15px', borderRadius: '10px', marginBottom: '20px' }}>
+                                <span style={{ color: 'var(--color-accent)', fontWeight: 'bold' }}>+{result.increase} Points</span>
+                                <span style={{ margin: '0 10px' }}>in</span>
+                                <span style={{ fontWeight: 'bold' }}>{result.timeframe}</span>
+                            </div>
+
+                            <p style={{ fontSize: '14px', color: '#666', marginBottom: '30px' }}>
+                                We identified {result.details.length} factors holding you back.
+                                We can help you remove them.
+                            </p>
+
+                            {priceEstimate && (
+                                <div style={{ marginBottom: '25px', padding: '15px', border: '1px solid var(--color-primary)', borderRadius: '10px' }}>
+                                    <small style={{ display: 'block', textTransform: 'uppercase', letterSpacing: '1px', fontWeight: 'bold', color: '#666' }}>Estimated Cost</small>
+                                    <span style={{ fontSize: '24px', fontWeight: 'bold', color: '#1A1A1A' }}>{priceEstimate}</span>
+                                    {priceEstimate.includes('FREE') && <div style={{ fontSize: '12px', marginTop: '5px' }}>*Standard fees waived for AZ Home Buyers.</div>}
+                                </div>
+                            )}
+
+                            <div style={{ display: 'flex', gap: '10px', flexDirection: 'column' }}>
+                                <a
+                                    href={import.meta.env.VITE_CALENDAR_URL || '#'}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="btn-primary"
+                                    style={{ width: '100%', textAlign: 'center', textDecoration: 'none', display: 'inline-block', boxSizing: 'border-box' }}
+                                >
+                                    Schedule Free Consultation
+                                </a>
+
+                                <button className="btn-secondary" style={{ width: '100%' }} onClick={() => window.location.reload()}>
+                                    Start Over
+                                </button>
+                            </div>
+
+                            <p style={{ fontSize: '12px', color: '#999', marginTop: '20px', fontStyle: 'italic' }}>
+                                *Disclaimer: Results may vary. Projections are estimates based on standard credit repair models and your provided information.
+                            </p>
+                        </>
                     )}
-
-                    <div style={{ display: 'flex', gap: '10px', flexDirection: 'column' }}>
-                        <a
-                            href={import.meta.env.VITE_CALENDAR_URL || '#'}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="btn-primary"
-                            style={{ width: '100%', textAlign: 'center', textDecoration: 'none', display: 'inline-block', boxSizing: 'border-box' }}
-                        >
-                            Schedule Free Consultation
-                        </a>
-
-                        <button className="btn-secondary" style={{ width: '100%' }} onClick={() => window.location.reload()}>
-                            Start Over
-                        </button>
-                    </div>
-
-                    <p style={{ fontSize: '12px', color: '#999', marginTop: '20px', fontStyle: 'italic' }}>
-                        *Disclaimer: Results may vary. Projections are estimates based on standard credit repair models and your provided information.
-                    </p>
                 </div>
             )}
         </div>

@@ -9,18 +9,42 @@ const POINT_IMPACT = {
     LATE_PAYMENTS: 15,
     INQUIRIES: 4,
     BANKRUPTCY: 50,
-    REPOS: 30
+    REPOS: 30,
+    CHILD_SUPPORT: 20, // Estimated impact
+    HIGH_BALANCES: 15  // Estimated impact
 };
+
+const DISQUALIFYING_ONLY = ['LATE_PAYMENTS', 'HIGH_BALANCES'];
 
 /**
  * Calculates the projected credit score increase based on negative items.
  * @param {Object} data - The user input data
  * @param {number} data.currentScore - Current credit score
  * @param {string[]} data.negativeItems - List of negative items
- * @returns {Object} { projectedScore, increase, framing }
+ * @returns {Object} { projectedScore, increase, framing, disqualified }
  */
 export function calculateProjection(data) {
     const { currentScore, negativeItems = [] } = data;
+
+    // Disqualification Logic
+    if (negativeItems.length > 0) {
+        const actionableItems = negativeItems.filter(item => {
+            const key = item.toUpperCase().replace(/\s+/g, '_');
+            return !DISQUALIFYING_ONLY.includes(key);
+        });
+
+        // If they have negative items, but ALL of them are in the "Disqualifying Only" list
+        // e.g. They only have Late Payments, or only High Balances, or both.
+        // We cannot help them.
+        if (actionableItems.length === 0) {
+            return {
+                disqualified: true,
+                message: "Based on the items selected (Late Payments / High Balances only), we are unable to assist at this time as these are typically not removable."
+            };
+        }
+    }
+
+
     let increase = 0;
 
     // Calculate potential increase
@@ -48,6 +72,7 @@ export function calculateProjection(data) {
     }
 
     return {
+        disqualified: false,
         currentScore: parseInt(currentScore),
         projectedScore,
         increase,
