@@ -15,7 +15,8 @@ const CreditPredictor = () => {
         currentScore: 600,
         negativeItems: [],
 
-        goal: 'Buy a Home'
+        goal: 'Buy a Home',
+        homeBuyerDetails: ''
     });
     const [result, setResult] = useState(null);
     const [priceEstimate, setPriceEstimate] = useState(null);
@@ -81,13 +82,14 @@ const CreditPredictor = () => {
 
             // Pricing Logic
             let price = '';
-            if (formData.goal === 'Arizona Home Buyer') {
+            // Pricing Logic Update: FREE Only for Arizona + No Realtor
+            if (formData.goal === 'Buy a Home' && formData.homeBuyerDetails === "Arizona (I don't have a Realtor)") {
                 price = 'FREE (Arizona Home Buyer Special)';
             } else {
-                const count = formData.negativeItems.length; // Logic simplification: normally would ask for count per item
+                const count = formData.negativeItems.length;
                 // Heuristic: If they checked it, assume at least 1-2 accounts.
                 // Refined Logic based on Item Types:
-                const hasAdvancedItems = formData.negativeItems.some(i => ['Bankruptcy', 'Foreclosures', 'Repos'].includes(i));
+                const hasAdvancedItems = formData.negativeItems.some(i => ['Bankruptcy', 'Foreclosures', 'Repos', 'Child Support', 'Judgments'].includes(i));
 
                 if (hasAdvancedItems) {
                     price = '$2,100 - $3,000 (One-time)';
@@ -109,7 +111,8 @@ const CreditPredictor = () => {
                 creditProfile: {
                     currentScore: formData.currentScore,
                     negativeItems: formData.negativeItems,
-                    goal: formData.goal
+                    goal: formData.goal,
+                    homeBuyerDetails: formData.goal === 'Buy a Home' ? formData.homeBuyerDetails : 'N/A'
                 },
                 meta: {
                     source: 'website-funnel',
@@ -202,23 +205,41 @@ const CreditPredictor = () => {
                 <div>
                     <h2>What is your primary goal?</h2>
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', marginTop: '20px' }}>
-                        {['Arizona Home Buyer', 'Buy a Home', 'Buy a Car', 'Get a Credit Card', 'General Improvement'].map(goal => (
+                        {['Buy a Home', 'Buy a Car', 'Get a Credit Card', 'General Improvement'].map(goal => (
                             <button
                                 key={goal}
                                 className={formData.goal === goal ? 'btn-primary' : 'btn-secondary'}
-                                onClick={() => setFormData(p => ({ ...p, goal }))}
+                                onClick={() => setFormData(p => ({ ...p, goal, homeBuyerDetails: '' }))} // Reset details on goal change
                                 style={{ textAlign: 'left' }}
                             >
                                 {goal}
                             </button>
                         ))}
                     </div>
+
+                    {formData.goal === 'Buy a Home' && (
+                        <div style={{ marginTop: '20px', animation: 'fadeIn 0.5s' }}>
+                            <label style={{ display: 'block', marginBottom: '8px', fontWeight: 'bold' }}>Tell us more about your home buying journey:</label>
+                            <select
+                                value={formData.homeBuyerDetails}
+                                onChange={(e) => setFormData(prev => ({ ...prev, homeBuyerDetails: e.target.value }))}
+                                style={{ width: '100%', padding: '10px', borderRadius: '5px', border: '1px solid #ddd' }}
+                            >
+                                <option value="">-- Please Select --</option>
+                                <option value="Arizona (I don't have a Realtor)">Arizona (I don't have a Realtor)</option>
+                                <option value="Arizona (I have a realtor)">Arizona (I have a realtor)</option>
+                                <option value="California (I don't have a realtor)">California (I don't have a realtor)</option>
+                                <option value="California (I have a realtor)">California (I have a realtor)</option>
+                                <option value="Any other state">Any other state</option>
+                            </select>
+                        </div>
+                    )}
                     <div style={{ marginTop: '20px', display: 'flex', justifyContent: 'center' }}>
 
                     </div>
                     <div style={{ display: 'flex', gap: '10px', marginTop: '30px' }}>
                         <button className="btn-secondary" onClick={prevStep}>Back</button>
-                        <button className="btn-primary" onClick={handleSubmit}>Analyze Now</button>
+                        <button className="btn-primary" onClick={handleSubmit} disabled={formData.goal === 'Buy a Home' && !formData.homeBuyerDetails}>Analyze Now</button>
                     </div>
                 </div>
             )}
