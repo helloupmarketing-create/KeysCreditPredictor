@@ -12,6 +12,7 @@ const CreditPredictor = () => {
         firstName: '',
         email: '',
         phone: '',
+        emailConsent: false,
         currentScore: 600,
         negativeItems: [],
 
@@ -22,10 +23,16 @@ const CreditPredictor = () => {
     const [priceEstimate, setPriceEstimate] = useState(null);
 
     const [phoneError, setPhoneError] = useState('');
+    const [consentError, setConsentError] = useState('');
 
     const handleInputChange = (e) => {
-        const { name, value } = e.target;
-        setFormData(prev => ({ ...prev, [name]: value }));
+        const { name, value, type, checked } = e.target;
+        const val = type === 'checkbox' ? checked : value;
+        setFormData(prev => ({ ...prev, [name]: val }));
+
+        if (name === 'emailConsent' && checked) {
+            setConsentError('');
+        }
 
         if (name === 'phone') {
             try {
@@ -61,6 +68,12 @@ const CreditPredictor = () => {
                 }
             } catch (error) {
                 setPhoneError('Please enter a valid US phone number.');
+                return;
+            }
+
+            // Validate Consent
+            if (!formData.emailConsent) {
+                setConsentError('You must agree to receive emails to proceed.');
                 return;
             }
         }
@@ -157,6 +170,21 @@ const CreditPredictor = () => {
                             />
                             {phoneError && <small style={{ color: 'red' }}>{phoneError}</small>}
                         </div>
+
+                        <div style={{ display: 'flex', alignItems: 'flex-start', gap: '10px' }}>
+                            <input
+                                type="checkbox"
+                                name="emailConsent"
+                                checked={formData.emailConsent}
+                                onChange={handleInputChange}
+                                style={{ marginTop: '4px', width: 'auto' }}
+                            />
+                            <label style={{ fontSize: '14px', color: '#555' }}>
+                                I agree to receiving e-mails and updates.
+                            </label>
+                        </div>
+                        {consentError && <small style={{ color: 'red', marginTop: '-10px' }}>{consentError}</small>}
+
                         <button className="btn-primary" onClick={nextStep} style={{ marginTop: '10px' }}>Next: Your Profile</button>
                     </div>
                 </div>
