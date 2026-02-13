@@ -8,7 +8,9 @@ const MOCK_MODE = import.meta.env.VITE_ENABLE_MOCK_MODE === 'true';
 
 export const IntegrationService = {
     async submitLead(leadData) {
-        // console.log("🚀 Submitting Lead to Integration Endpoint:", leadData);
+        console.log("🚀 IntegrationService: Initiating submission...");
+        console.log("DEBUG: Webhook URL Configured?", !!WEBHOOK_URL);
+        console.log("DEBUG: Mock Mode?", MOCK_MODE);
 
         if (MOCK_MODE) {
             console.log("⚠️ Mock Mode Enabled: Simulating success response.");

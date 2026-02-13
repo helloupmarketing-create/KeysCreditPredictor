@@ -129,7 +129,12 @@ const CreditPredictor = () => {
                 const isArizonaWithRealtor = formData.goal === 'Buy a Home' && formData.homeBuyerDetails === "Arizona (I have a realtor)";
                 const isDisqualified = projection.disqualified;
 
+                console.log("DEBUG: Checking Submission Conditions");
+                console.log("DEBUG: isArizonaWithRealtor:", isArizonaWithRealtor);
+                console.log("DEBUG: isDisqualified:", isDisqualified);
+
                 if (!isArizonaWithRealtor && !isDisqualified) {
+                    console.log("DEBUG: Conditions met. Calling IntegrationService.submitLead...");
                     await IntegrationService.submitLead({
                         contact: {
                             firstName: formData.firstName,
