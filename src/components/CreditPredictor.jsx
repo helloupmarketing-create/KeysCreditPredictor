@@ -69,83 +69,90 @@ const CreditPredictor = () => {
 
         // Simulate calculation delay
         setTimeout(async () => {
-            const projection = calculateProjection(formData);
+            try {
+                const projection = calculateProjection(formData);
 
-            // Exemption Logic: AZ and CA homebuyers are NEVER disqualified
-            // regardless of negative items selected.
-            const isExempt = formData.homeBuyerDetails && (
-                formData.homeBuyerDetails.includes('Arizona') ||
-                formData.homeBuyerDetails.includes('California')
-            );
+                // Exemption Logic: AZ and CA homebuyers are NEVER disqualified
+                // regardless of negative items selected.
+                const isExempt = formData.homeBuyerDetails && (
+                    formData.homeBuyerDetails.includes('Arizona') ||
+                    formData.homeBuyerDetails.includes('California')
+                );
 
-            if (isExempt && projection.disqualified) {
-                projection.disqualified = false;
-                // Add a dummy increase or message if needed, but projectedScore logic 
-                // in utils might need a fallback if increase is 0. 
-                // For now, let's assume if they are exempt, we just want to show them the "Good News" screen.
-                // We might want to ensure they have a positive projected score increase or at least a message.
-                if (projection.increase === 0) {
-                    projection.increase = 20; // Default nominal increase for "fixable" issues logic
-                    projection.projectedScore = parseInt(formData.currentScore) + 20;
-                    projection.timeframe = '3-6 months';
-                    projection.details = [{ item: 'General Credit Improvement', points: 20 }];
-                }
-            }
-
-            setResult(projection);
-
-            // Pricing Logic
-            let price = '';
-            // Pricing Logic Update: FREE Only for Arizona + No Realtor
-            if (formData.goal === 'Buy a Home' && formData.homeBuyerDetails === "Arizona (I don't have a Realtor)") {
-                price = 'FREE (Arizona Home Buyer Special)';
-            } else {
-                const count = formData.negativeItems.length;
-                // Heuristic: If they checked it, assume at least 1-2 accounts.
-                // Refined Logic based on Item Types:
-                const hasAdvancedItems = formData.negativeItems.some(i => ['Bankruptcy', 'Foreclosures', 'Repos', 'Child Support', 'Judgments'].includes(i));
-
-                if (hasAdvancedItems) {
-                    price = '$2,100 - $3,000 (One-time)';
-                } else if (count >= 4) { // Heuristic for "Popular" (>10 accounts usually implies multiple types selected)
-                    price = '$1,500 - $2,000 (One-time)';
-                } else {
-                    price = '$1,000 - $1,400 (One-time)';
-                }
-            }
-            setPriceEstimate(price);
-
-            // Send to Integration (Zapier) in background 
-            // Conditions:
-            // 1. Not an Arizona Buyer with a Realtor
-            // 2. Not Disqualified (only Late Payments or High Balances)
-
-            const isArizonaWithRealtor = formData.goal === 'Buy a Home' && formData.homeBuyerDetails === "Arizona (I have a realtor)";
-            const isDisqualified = projection.disqualified;
-
-            if (!isArizonaWithRealtor && !isDisqualified) {
-                await IntegrationService.submitLead({
-                    contact: {
-                        firstName: formData.firstName,
-                        lastName: formData.lastName,
-                        email: formData.email,
-                        emailConsent: formData.emailConsent
-                    },
-                    creditProfile: {
-                        currentScore: formData.currentScore,
-                        negativeItems: formData.negativeItems,
-                        goal: formData.goal,
-                        homeBuyerDetails: formData.goal === 'Buy a Home' ? formData.homeBuyerDetails : 'N/A'
-                    },
-                    meta: {
-                        source: 'website-funnel',
-                        timestamp: new Date().toISOString()
+                if (isExempt && projection.disqualified) {
+                    projection.disqualified = false;
+                    // Add a dummy increase or message if needed, but projectedScore logic
+                    // in utils might need a fallback if increase is 0.
+                    // For now, let's assume if they are exempt, we just want to show them the "Good News" screen.
+                    // We might want to ensure they have a positive projected score increase or at least a message.
+                    if (projection.increase === 0) {
+                        projection.increase = 20; // Default nominal increase for "fixable" issues logic
+                        projection.projectedScore = parseInt(formData.currentScore) + 20;
+                        projection.timeframe = '3-6 months';
+                        projection.details = [{ item: 'General Credit Improvement', points: 20 }];
                     }
-                });
-            }
+                }
 
-            setLoading(false);
-            setStep(5); // Result state
+                setResult(projection);
+
+                // Pricing Logic
+                let price = '';
+                // Pricing Logic Update: FREE Only for Arizona + No Realtor
+                if (formData.goal === 'Buy a Home' && formData.homeBuyerDetails === "Arizona (I don't have a Realtor)") {
+                    price = 'FREE (Arizona Home Buyer Special)';
+                } else {
+                    const count = formData.negativeItems.length;
+                    // Heuristic: If they checked it, assume at least 1-2 accounts.
+                    // Refined Logic based on Item Types:
+                    const hasAdvancedItems = formData.negativeItems.some(i => ['Bankruptcy', 'Foreclosures', 'Repos', 'Child Support', 'Judgments'].includes(i));
+
+                    if (hasAdvancedItems) {
+                        price = '$2,100 - $3,000 (One-time)';
+                    } else if (count >= 4) { // Heuristic for "Popular" (>10 accounts usually implies multiple types selected)
+                        price = '$1,500 - $2,000 (One-time)';
+                    } else {
+                        price = '$1,000 - $1,400 (One-time)';
+                    }
+                }
+                setPriceEstimate(price);
+
+                // Send to Integration (Zapier) in background
+                // Conditions:
+                // 1. Not an Arizona Buyer with a Realtor
+                // 2. Not Disqualified (only Late Payments or High Balances)
+
+                const isArizonaWithRealtor = formData.goal === 'Buy a Home' && formData.homeBuyerDetails === "Arizona (I have a realtor)";
+                const isDisqualified = projection.disqualified;
+
+                if (!isArizonaWithRealtor && !isDisqualified) {
+                    await IntegrationService.submitLead({
+                        contact: {
+                            firstName: formData.firstName,
+                            lastName: formData.lastName,
+                            email: formData.email,
+                            emailConsent: formData.emailConsent
+                        },
+                        creditProfile: {
+                            currentScore: formData.currentScore,
+                            negativeItems: formData.negativeItems,
+                            goal: formData.goal,
+                            homeBuyerDetails: formData.goal === 'Buy a Home' ? formData.homeBuyerDetails : 'N/A'
+                        },
+                        meta: {
+                            source: 'website-funnel',
+                            timestamp: new Date().toISOString()
+                        }
+                    });
+                }
+
+                setStep(5); // Result state
+            } catch (error) {
+                console.error("Error in calculation/submission:", error);
+                alert("An error occurred while processing your request. Please try again.");
+                setStep(1); // Go back to start or handle gracefully
+            } finally {
+                setLoading(false);
+            }
         }, 2000);
     };
 
