@@ -114,25 +114,29 @@ const CreditPredictor = () => {
             }
             setPriceEstimate(price);
 
-            // Send to Integration (Zapier) in background
-            await IntegrationService.submitLead({
-                contact: {
-                    firstName: formData.firstName,
-                    email: formData.email,
-                    phone: formData.phone,
-                    emailConsent: formData.emailConsent
-                },
-                creditProfile: {
-                    currentScore: formData.currentScore,
-                    negativeItems: formData.negativeItems,
-                    goal: formData.goal,
-                    homeBuyerDetails: formData.goal === 'Buy a Home' ? formData.homeBuyerDetails : 'N/A'
-                },
-                meta: {
-                    source: 'website-funnel',
-                    timestamp: new Date().toISOString()
-                }
-            });
+            // Send to Integration (Zapier) in background - Only if not an Arizona Buyer with a Realtor
+            const isArizonaWithRealtor = formData.goal === 'Buy a Home' && formData.homeBuyerDetails === "Arizona (I have a realtor)";
+
+            if (!isArizonaWithRealtor) {
+                await IntegrationService.submitLead({
+                    contact: {
+                        firstName: formData.firstName,
+                        email: formData.email,
+                        phone: formData.phone,
+                        emailConsent: formData.emailConsent
+                    },
+                    creditProfile: {
+                        currentScore: formData.currentScore,
+                        negativeItems: formData.negativeItems,
+                        goal: formData.goal,
+                        homeBuyerDetails: formData.goal === 'Buy a Home' ? formData.homeBuyerDetails : 'N/A'
+                    },
+                    meta: {
+                        source: 'website-funnel',
+                        timestamp: new Date().toISOString()
+                    }
+                });
+            }
 
             setLoading(false);
             setStep(5); // Result state
