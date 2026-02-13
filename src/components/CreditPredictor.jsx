@@ -81,15 +81,20 @@ const CreditPredictor = () => {
 
                 if (isExempt && projection.disqualified) {
                     projection.disqualified = false;
-                    // Add a dummy increase or message if needed, but projectedScore logic
-                    // in utils might need a fallback if increase is 0.
-                    // For now, let's assume if they are exempt, we just want to show them the "Good News" screen.
-                    // We might want to ensure they have a positive projected score increase or at least a message.
-                    if (projection.increase === 0) {
-                        projection.increase = 20; // Default nominal increase for "fixable" issues logic
-                        projection.projectedScore = parseInt(formData.currentScore) + 20;
+
+                    // If exempt, we must ensure the projection object has all necessary fields
+                    // because the 'disqualified' return from creditLogic might be missing them.
+                    if (!projection.increase || projection.increase === 0) {
+                        projection.increase = 40; // Default increase for manual review scenario
+                    }
+                    if (!projection.projectedScore) {
+                        projection.projectedScore = parseInt(formData.currentScore) + (projection.increase || 40);
+                    }
+                    if (!projection.timeframe) {
                         projection.timeframe = '3-6 months';
-                        projection.details = [{ item: 'General Credit Improvement', points: 20 }];
+                    }
+                    if (!projection.details) {
+                        projection.details = [{ item: 'Credit Analysis Review', points: 40 }];
                     }
                 }
 
