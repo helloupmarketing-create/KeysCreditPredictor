@@ -375,7 +375,7 @@ const CreditPredictor = () => {
                                     </a>
                                 ) : formData.homeBuyerDetails === "California (I don't have a realtor)" ? (
                                     <a
-                                        href={import.meta.env.VITE_CALENDAR_URL || '#'}
+                                        href="https://keystacticalappointment.as.me/schedule/14e19d5f/appointment/69755159/calendar/10477452?appointmentTypeIds%5B%5D=69755159"
                                         target="_blank"
                                         rel="noopener noreferrer"
                                         className="btn-primary"
