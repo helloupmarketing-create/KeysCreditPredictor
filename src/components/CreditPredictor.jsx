@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { calculateProjection } from '../utils/creditLogic';
-import { ZohoService } from '../services/ZohoService';
+import { IntegrationService } from '../services/IntegrationService';
 
 
 import { parsePhoneNumber } from 'libphonenumber-js';
@@ -114,12 +114,13 @@ const CreditPredictor = () => {
             }
             setPriceEstimate(price);
 
-            // Send to Zoho in background
-            await ZohoService.submitLead({
+            // Send to Integration (Zapier) in background
+            await IntegrationService.submitLead({
                 contact: {
                     firstName: formData.firstName,
                     email: formData.email,
-                    phone: formData.phone
+                    phone: formData.phone,
+                    emailConsent: formData.emailConsent
                 },
                 creditProfile: {
                     currentScore: formData.currentScore,
