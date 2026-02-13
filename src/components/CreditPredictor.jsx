@@ -114,10 +114,15 @@ const CreditPredictor = () => {
             }
             setPriceEstimate(price);
 
-            // Send to Integration (Zapier) in background - Only if not an Arizona Buyer with a Realtor
-            const isArizonaWithRealtor = formData.goal === 'Buy a Home' && formData.homeBuyerDetails === "Arizona (I have a realtor)";
+            // Send to Integration (Zapier) in background 
+            // Conditions:
+            // 1. Not an Arizona Buyer with a Realtor
+            // 2. Not Disqualified (only Late Payments or High Balances)
 
-            if (!isArizonaWithRealtor) {
+            const isArizonaWithRealtor = formData.goal === 'Buy a Home' && formData.homeBuyerDetails === "Arizona (I have a realtor)";
+            const isDisqualified = projection.disqualified;
+
+            if (!isArizonaWithRealtor && !isDisqualified) {
                 await IntegrationService.submitLead({
                     contact: {
                         firstName: formData.firstName,
