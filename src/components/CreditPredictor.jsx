@@ -71,6 +71,27 @@ const CreditPredictor = () => {
         setTimeout(async () => {
             const projection = calculateProjection(formData);
 
+            // Exemption Logic: AZ and CA homebuyers are NEVER disqualified
+            // regardless of negative items selected.
+            const isExempt = formData.homeBuyerDetails && (
+                formData.homeBuyerDetails.includes('Arizona') ||
+                formData.homeBuyerDetails.includes('California')
+            );
+
+            if (isExempt && projection.disqualified) {
+                projection.disqualified = false;
+                // Add a dummy increase or message if needed, but projectedScore logic 
+                // in utils might need a fallback if increase is 0. 
+                // For now, let's assume if they are exempt, we just want to show them the "Good News" screen.
+                // We might want to ensure they have a positive projected score increase or at least a message.
+                if (projection.increase === 0) {
+                    projection.increase = 20; // Default nominal increase for "fixable" issues logic
+                    projection.projectedScore = parseInt(formData.currentScore) + 20;
+                    projection.timeframe = '3-6 months';
+                    projection.details = [{ item: 'General Credit Improvement', points: 20 }];
+                }
+            }
+
             setResult(projection);
 
             // Pricing Logic
@@ -351,6 +372,16 @@ const CreditPredictor = () => {
                                         }}
                                     >
                                         Schedule Appointment
+                                    </a>
+                                ) : formData.homeBuyerDetails === "California (I don't have a realtor)" ? (
+                                    <a
+                                        href={import.meta.env.VITE_CALENDAR_URL || '#'}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="btn-primary"
+                                        style={{ width: '100%', textAlign: 'center', textDecoration: 'none', display: 'inline-block', boxSizing: 'border-box' }}
+                                    >
+                                        Schedule Free Consultation
                                     </a>
                                 ) : (
                                     <div style={{ textAlign: 'center', padding: '20px', background: 'rgba(255, 255, 255, 0.6)', borderRadius: '12px', border: '1px solid rgba(255, 255, 255, 0.8)', boxShadow: '0 4px 6px rgba(0,0,0,0.05)' }}>
