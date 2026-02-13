@@ -31,11 +31,10 @@ export const IntegrationService = {
 
         try {
             // Simple POST to Webhook
+            // NOTE: We use 'text/plain' to avoid CORS preflight (OPTIONS) requests which Zapier often blocks.
+            // Zapier is smart enough to parse the JSON body even with this header.
             const response = await fetch(WEBHOOK_URL, {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
                 body: JSON.stringify(leadData),
             });
 
