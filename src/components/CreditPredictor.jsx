@@ -352,7 +352,13 @@ const CreditPredictor = () => {
                                 <div style={{ marginBottom: '25px', padding: '15px', border: '1px solid var(--color-primary)', borderRadius: '10px' }}>
                                     <small style={{ display: 'block', textTransform: 'uppercase', letterSpacing: '1px', fontWeight: 'bold', color: '#666' }}>Estimated Cost</small>
                                     <span style={{ fontSize: '24px', fontWeight: 'bold', color: '#1A1A1A' }}>{priceEstimate}</span>
-                                    {priceEstimate.includes('FREE') && <div style={{ fontSize: '12px', marginTop: '5px' }}>*Standard fees waived for AZ Home Buyers.</div>}
+                                    {priceEstimate.includes('FREE') ? (
+                                        <div style={{ fontSize: '12px', marginTop: '5px' }}>*Standard fees waived for AZ Home Buyers.</div>
+                                    ) : (
+                                        <div style={{ fontSize: '12px', marginTop: '5px', fontStyle: 'italic', color: '#555' }}>
+                                            *One-time payment. Financing options available.
+                                        </div>
+                                    )}
                                 </div>
                             )}
 
