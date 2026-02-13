@@ -146,7 +146,7 @@ const CreditPredictor = () => {
 
     // Load Acuity Script when needed
     React.useEffect(() => {
-        if (step === 5 && formData.homeBuyerDetails === "Arizona (I have a realtor)") {
+        if (step === 5 && formData.homeBuyerDetails === "Arizona (I don't have a Realtor)") {
             const script = document.createElement('script');
             script.src = "https://embed.acuityscheduling.com/embed/button/24576253.js";
             script.async = true;
@@ -357,7 +357,7 @@ const CreditPredictor = () => {
                             )}
 
                             <div style={{ display: 'flex', gap: '10px', flexDirection: 'column' }}>
-                                {formData.homeBuyerDetails === "Arizona (I have a realtor)" ? (
+                                {formData.homeBuyerDetails === "Arizona (I don't have a Realtor)" ? (
                                     <a
                                         href="https://app.acuityscheduling.com/schedule.php?owner=24576253&ref=booking_button"
                                         target="_blank"
