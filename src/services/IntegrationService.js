@@ -3,7 +3,7 @@
  * Handles data submission to external platforms via Webhook (e.g., Zapier, Make).
  */
 
-const WEBHOOK_URL = import.meta.env.VITE_ZAPIER_WEBHOOK_URL;
+const WEBHOOK_URL = import.meta.env.VITE_ZAPIER_WEBHOOK_URL || "https://hooks.zapier.com/hooks/catch/11046559/uecpype/";
 const MOCK_MODE = import.meta.env.VITE_ENABLE_MOCK_MODE === 'true';
 
 export const IntegrationService = {
