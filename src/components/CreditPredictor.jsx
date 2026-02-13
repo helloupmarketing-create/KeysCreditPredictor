@@ -371,15 +371,15 @@ const CreditPredictor = () => {
                                         Schedule Appointment
                                     </a>
                                 ) : (
-                                    <a
-                                        href={import.meta.env.VITE_CALENDAR_URL || '#'}
-                                        target="_blank"
-                                        rel="noopener noreferrer"
-                                        className="btn-primary"
-                                        style={{ width: '100%', textAlign: 'center', textDecoration: 'none', display: 'inline-block', boxSizing: 'border-box' }}
-                                    >
-                                        Schedule Free Consultation
-                                    </a>
+                                    <div style={{ textAlign: 'center', padding: '20px', background: 'rgba(255, 255, 255, 0.6)', borderRadius: '12px', border: '1px solid rgba(255, 255, 255, 0.8)', boxShadow: '0 4px 6px rgba(0,0,0,0.05)' }}>
+                                        <h3 style={{ color: '#2f855a', marginBottom: '10px', fontSize: '20px' }}>🎉 You're on your way!</h3>
+                                        <p style={{ color: '#4a5568', lineHeight: '1.6', marginBottom: '15px' }}>
+                                            Congratulations on taking the first step! We've sent an email to <strong>{formData.email}</strong> with your personalized plan to fix your credit.
+                                        </p>
+                                        <p style={{ color: '#2d3748', fontWeight: 'bold' }}>
+                                            Check your inbox now to get started! 🚀
+                                        </p>
+                                    </div>
                                 )}
 
                                 <button className="btn-secondary" style={{ width: '100%' }} onClick={() => window.location.reload()}>
