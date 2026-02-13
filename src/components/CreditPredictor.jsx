@@ -10,8 +10,8 @@ const CreditPredictor = () => {
     const [loading, setLoading] = useState(false);
     const [formData, setFormData] = useState({
         firstName: '',
+        lastName: '',
         email: '',
-        phone: '',
         emailConsent: false,
         currentScore: 600,
         negativeItems: [],
@@ -22,7 +22,6 @@ const CreditPredictor = () => {
     const [result, setResult] = useState(null);
     const [priceEstimate, setPriceEstimate] = useState(null);
 
-    const [phoneError, setPhoneError] = useState('');
     const [consentError, setConsentError] = useState('');
 
     const handleInputChange = (e) => {
@@ -32,19 +31,6 @@ const CreditPredictor = () => {
 
         if (name === 'emailConsent' && checked) {
             setConsentError('');
-        }
-
-        if (name === 'phone') {
-            try {
-                const phoneNumber = parsePhoneNumber(value, 'US');
-                if (phoneNumber && phoneNumber.isValid()) {
-                    setPhoneError('');
-                } else {
-                    setPhoneError('Invalid phone number format');
-                }
-            } catch (error) {
-                // Allow partial typing without error bombarding, check on blur or submit
-            }
         }
     };
 
@@ -59,15 +45,9 @@ const CreditPredictor = () => {
 
     const nextStep = () => {
         if (step === 1) {
-            // Validate Phone
-            try {
-                const phoneNumber = parsePhoneNumber(formData.phone, 'US');
-                if (!phoneNumber || !phoneNumber.isValid()) {
-                    setPhoneError('Please enter a valid US phone number.');
-                    return;
-                }
-            } catch (error) {
-                setPhoneError('Please enter a valid US phone number.');
+            // Validate Name and Email
+            if (!formData.firstName || !formData.lastName || !formData.email) {
+                setConsentError('Please fill in all fields.'); // Reuse error state for simplicity or create general error
                 return;
             }
 
@@ -126,8 +106,8 @@ const CreditPredictor = () => {
                 await IntegrationService.submitLead({
                     contact: {
                         firstName: formData.firstName,
+                        lastName: formData.lastName,
                         email: formData.email,
-                        phone: formData.phone,
                         emailConsent: formData.emailConsent
                     },
                     creditProfile: {
@@ -182,18 +162,9 @@ const CreditPredictor = () => {
                     <h2>Let's Get Started</h2>
                     <p>Where should we send your analysis?</p>
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', marginTop: '20px' }}>
-                        <input name="firstName" placeholder="First Name" value={formData.firstName} onChange={handleInputChange} />
-                        <input name="email" placeholder="Email Address" value={formData.email} onChange={handleInputChange} />
-                        <div>
-                            <input
-                                name="phone"
-                                placeholder="Phone Number"
-                                value={formData.phone}
-                                onChange={handleInputChange}
-                                style={{ width: '100%', borderColor: phoneError ? 'red' : '#ddd' }}
-                            />
-                            {phoneError && <small style={{ color: 'red' }}>{phoneError}</small>}
-                        </div>
+                        <input name="firstName" placeholder="First Name" value={formData.firstName} onChange={handleInputChange} style={{ padding: '10px', borderRadius: '5px', border: '1px solid #ddd' }} />
+                        <input name="lastName" placeholder="Last Name" value={formData.lastName} onChange={handleInputChange} style={{ padding: '10px', borderRadius: '5px', border: '1px solid #ddd' }} />
+                        <input name="email" placeholder="Email Address" value={formData.email} onChange={handleInputChange} style={{ padding: '10px', borderRadius: '5px', border: '1px solid #ddd' }} />
 
                         <div style={{ display: 'flex', alignItems: 'flex-start', gap: '10px' }}>
                             <input
