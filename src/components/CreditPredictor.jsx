@@ -148,6 +148,11 @@ const CreditPredictor = () => {
                             timestamp: new Date().toISOString()
                         }
                     });
+
+                    // Track Lead Event (if pixel exists)
+                    if (window.fbq) {
+                        window.fbq('track', 'Lead');
+                    }
                 }
 
                 setStep(5); // Result state
