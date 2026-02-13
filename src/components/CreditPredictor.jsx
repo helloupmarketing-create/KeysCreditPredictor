@@ -150,18 +150,7 @@ const CreditPredictor = () => {
     };
 
 
-    // Load Acuity Script when needed
-    React.useEffect(() => {
-        if (step === 5 && formData.homeBuyerDetails === "Arizona (I don't have a Realtor)") {
-            const script = document.createElement('script');
-            script.src = "https://embed.acuityscheduling.com/embed/button/24576253.js";
-            script.async = true;
-            document.body.appendChild(script);
-            return () => {
-                document.body.removeChild(script);
-            }
-        }
-    }, [step, formData.homeBuyerDetails]);
+    // Load Acuity Script removed - using direct links now
 
     return (
         <div className="glass-panel" style={{ maxWidth: '600px', margin: '40px auto', padding: '40px' }}>
@@ -362,14 +351,11 @@ const CreditPredictor = () => {
                             <div style={{ display: 'flex', gap: '10px', flexDirection: 'column' }}>
                                 {formData.homeBuyerDetails === "Arizona (I don't have a Realtor)" ? (
                                     <a
-                                        href="https://app.acuityscheduling.com/schedule.php?owner=24576253&ref=booking_button"
+                                        href="https://keystacticalappointment.as.me/schedule/14e19d5f/appointment/69755159/calendar/10477452?appointmentTypeIds%5B%5D=69755159"
                                         target="_blank"
-                                        className="acuity-embed-button btn-primary" // Added btn-primary to match style if css fails
-                                        style={{
-                                            background: '#352d28', color: '#fff', padding: '12px', border: '0px',
-                                            borderRadius: '4px', textDecoration: 'none', display: 'block', textAlign: 'center', width: '100%',
-                                            boxSizing: 'border-box'
-                                        }}
+                                        rel="noopener noreferrer"
+                                        className="btn-primary"
+                                        style={{ width: '100%', textAlign: 'center', textDecoration: 'none', display: 'inline-block', boxSizing: 'border-box' }}
                                     >
                                         Schedule Appointment
                                     </a>
