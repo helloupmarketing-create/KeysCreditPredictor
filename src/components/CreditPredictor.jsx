@@ -143,6 +143,20 @@ const CreditPredictor = () => {
         }, 2000);
     };
 
+
+    // Load Acuity Script when needed
+    React.useEffect(() => {
+        if (step === 5 && formData.homeBuyerDetails === "Arizona (I have a realtor)") {
+            const script = document.createElement('script');
+            script.src = "https://embed.acuityscheduling.com/embed/button/24576253.js";
+            script.async = true;
+            document.body.appendChild(script);
+            return () => {
+                document.body.removeChild(script);
+            }
+        }
+    }, [step, formData.homeBuyerDetails]);
+
     return (
         <div className="glass-panel" style={{ maxWidth: '600px', margin: '40px auto', padding: '40px' }}>
             {/* Progress Bar */}
@@ -343,15 +357,30 @@ const CreditPredictor = () => {
                             )}
 
                             <div style={{ display: 'flex', gap: '10px', flexDirection: 'column' }}>
-                                <a
-                                    href={import.meta.env.VITE_CALENDAR_URL || '#'}
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    className="btn-primary"
-                                    style={{ width: '100%', textAlign: 'center', textDecoration: 'none', display: 'inline-block', boxSizing: 'border-box' }}
-                                >
-                                    Schedule Free Consultation
-                                </a>
+                                {formData.homeBuyerDetails === "Arizona (I have a realtor)" ? (
+                                    <a
+                                        href="https://app.acuityscheduling.com/schedule.php?owner=24576253&ref=booking_button"
+                                        target="_blank"
+                                        className="acuity-embed-button btn-primary" // Added btn-primary to match style if css fails
+                                        style={{
+                                            background: '#352d28', color: '#fff', padding: '12px', border: '0px',
+                                            borderRadius: '4px', textDecoration: 'none', display: 'block', textAlign: 'center', width: '100%',
+                                            boxSizing: 'border-box'
+                                        }}
+                                    >
+                                        Schedule Appointment
+                                    </a>
+                                ) : (
+                                    <a
+                                        href={import.meta.env.VITE_CALENDAR_URL || '#'}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="btn-primary"
+                                        style={{ width: '100%', textAlign: 'center', textDecoration: 'none', display: 'inline-block', boxSizing: 'border-box' }}
+                                    >
+                                        Schedule Free Consultation
+                                    </a>
+                                )}
 
                                 <button className="btn-secondary" style={{ width: '100%' }} onClick={() => window.location.reload()}>
                                     Start Over
