@@ -18,7 +18,7 @@ const HeroVSL = ({ onStart }) => {
         if (isPlaying) {
             controlsTimeoutRef.current = setTimeout(() => {
                 setShowControls(false);
-            }, 3000);
+            }, 1000);
         }
     };
 
@@ -314,7 +314,7 @@ const HeroVSL = ({ onStart }) => {
                                 height: '4px',
                                 borderRadius: '2px',
                                 appearance: 'none',
-                                background: `linear-gradient(to right, var(--color-accent) ${(currentTime / (duration || 100)) * 100}%, rgba(255,255,255,0.2) ${(currentTime / (duration || 100)) * 100}%)`,
+                                background: `linear-gradient(to right, var(--color-accent) ${(currentTime / (duration || 100)) * 100}%, transparent ${(currentTime / (duration || 100)) * 100}%)`,
                                 cursor: 'pointer',
                                 outline: 'none'
                             }}
@@ -342,7 +342,7 @@ const HeroVSL = ({ onStart }) => {
                                     height: '4px',
                                     borderRadius: '2px',
                                     appearance: 'none',
-                                    background: `linear-gradient(to right, #fff ${isMuted ? 0 : volume}%, rgba(255,255,255,0.2) ${isMuted ? 0 : volume}%)`,
+                                    background: `linear-gradient(to right, #fff ${isMuted ? 0 : volume}%, transparent ${isMuted ? 0 : volume}%)`,
                                     cursor: 'pointer',
                                     outline: 'none'
                                 }}
