@@ -1,6 +1,16 @@
-import React from 'react';
+import React, { useState } from 'react';
 
 const HeroVSL = ({ onStart }) => {
+    const [isPlaying, setIsPlaying] = useState(false);
+
+    const handlePlay = () => {
+        const iframe = document.querySelector('iframe[title="KO VSL"]');
+        if (iframe) {
+            iframe.contentWindow.postMessage('{"method":"play"}', '*');
+            setIsPlaying(true);
+        }
+    };
+
     return (
         <section style={{
             padding: '120px 20px 80px',
@@ -31,7 +41,7 @@ const HeroVSL = ({ onStart }) => {
                     Watch how our AI-driven analysis helps you identify exactly what's holding your score back and how to fix it fast.
                 </p>
 
-                {/* Vimeo Embed */}
+                {/* Vimeo Embed with Custom Overlay */}
                 <div style={{
                     position: 'relative',
                     width: '100%',
@@ -44,13 +54,56 @@ const HeroVSL = ({ onStart }) => {
                     background: '#000'
                 }}>
                     <iframe
-                        src="https://player.vimeo.com/video/1166598857?badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479&amp;title=0&amp;byline=0&amp;portrait=0"
+                        src="https://player.vimeo.com/video/1166598857?badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479&amp;title=0&amp;byline=0&amp;portrait=0&amp;controls=0"
                         style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%' }}
                         frameBorder="0"
                         allow="autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media; web-share"
                         referrerPolicy="strict-origin-when-cross-origin"
                         title="KO VSL"
                     ></iframe>
+
+                    {!isPlaying && (
+                        <div
+                            onClick={handlePlay}
+                            style={{
+                                position: 'absolute',
+                                top: 0,
+                                left: 0,
+                                width: '100%',
+                                height: '100%',
+                                background: 'rgba(0,0,0,0.1)',
+                                cursor: 'pointer',
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                zIndex: 10
+                            }}
+                        >
+                            <div style={{
+                                width: '80px',
+                                height: '80px',
+                                background: 'var(--color-accent)',
+                                borderRadius: '50%',
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                boxShadow: '0 0 30px var(--color-accent)',
+                                transition: 'transform 0.2s ease'
+                            }}
+                                onMouseEnter={(e) => e.currentTarget.style.transform = 'scale(1.1)'}
+                                onMouseLeave={(e) => e.currentTarget.style.transform = 'scale(1)'}
+                            >
+                                <div style={{
+                                    width: 0,
+                                    height: 0,
+                                    borderTop: '15px solid transparent',
+                                    borderBottom: '15px solid transparent',
+                                    borderLeft: '25px solid white',
+                                    marginLeft: '8px'
+                                }}></div>
+                            </div>
+                        </div>
+                    )}
                 </div>
 
                 <button
