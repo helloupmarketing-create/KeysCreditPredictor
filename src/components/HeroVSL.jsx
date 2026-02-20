@@ -57,12 +57,11 @@ const HeroVSL = ({ onStart }) => {
                     <iframe
                         width="100%"
                         height="100%"
-                        src="https://www.youtube.com/embed/_Q0eE7MsKKY?si=ks32E4k0Fgq1gQik&amp;controls=1&amp;rel=0&amp;modestbranding=1&amp;enablejsapi=1"
+                        src="https://www.youtube.com/embed/_Q0eE7MsKKY?controls=1&amp;rel=0&amp;modestbranding=1&amp;enablejsapi=1&amp;iv_load_policy=3&amp;fs=0"
                         title="YouTube VSL"
                         frameBorder="0"
                         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                         referrerPolicy="strict-origin-when-cross-origin"
-                        allowFullScreen
                         style={{ position: 'absolute', top: 0, left: 0 }}
                     ></iframe>
 
