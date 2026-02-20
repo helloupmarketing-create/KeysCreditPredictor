@@ -7,6 +7,7 @@ const HeroVSL = ({ onStart }) => {
         const iframe = document.querySelector('iframe[title="KO VSL"]');
         if (iframe) {
             iframe.contentWindow.postMessage('{"method":"setVolume", "value":1}', '*');
+            iframe.contentWindow.postMessage('{"method":"setMuted", "value":false}', '*');
             iframe.contentWindow.postMessage('{"method":"play"}', '*');
             setIsPlaying(true);
         }
@@ -55,7 +56,7 @@ const HeroVSL = ({ onStart }) => {
                     background: '#000'
                 }}>
                     <iframe
-                        src="https://player.vimeo.com/video/1166598857?badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479&amp;title=0&amp;byline=0&amp;portrait=0&amp;controls=1&amp;share=0&amp;pip=0&amp;fullscreen=0"
+                        src="https://player.vimeo.com/video/1166598857?badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479&amp;title=0&amp;byline=0&amp;portrait=0&amp;controls=1&amp;share=0&amp;pip=0&amp;fullscreen=0&amp;muted=0"
                         style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%' }}
                         frameBorder="0"
                         allow="autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media; web-share"
