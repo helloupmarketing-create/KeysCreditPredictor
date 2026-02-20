@@ -1,20 +1,6 @@
-import React, { useState, useRef } from 'react';
+import React from 'react';
 
 const HeroVSL = ({ onStart }) => {
-    const [isPlaying, setIsPlaying] = useState(false);
-    const videoRef = useRef(null);
-
-    const togglePlay = () => {
-        if (videoRef.current) {
-            if (isPlaying) {
-                videoRef.current.pause();
-            } else {
-                videoRef.current.play();
-            }
-            setIsPlaying(!isPlaying);
-        }
-    };
-
     return (
         <section style={{
             padding: '120px 20px 80px',
@@ -45,7 +31,7 @@ const HeroVSL = ({ onStart }) => {
                     Watch how our AI-driven analysis helps you identify exactly what's holding your score back and how to fix it fast.
                 </p>
 
-                {/* VSL Video Player */}
+                {/* Vimeo Embed */}
                 <div style={{
                     position: 'relative',
                     width: '100%',
@@ -55,57 +41,16 @@ const HeroVSL = ({ onStart }) => {
                     borderRadius: '20px',
                     overflow: 'hidden',
                     boxShadow: '0 20px 50px rgba(0,0,0,0.15)',
-                    background: '#000',
-                    cursor: 'pointer'
-                }}
-                    onClick={togglePlay}
-                >
-                    <video
-                        ref={videoRef}
-                        style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-                    >
-                        <source src="/KO VSL.mp4" type="video/mp4" />
-                        Your browser does not support the video tag.
-                    </video>
-
-                    {!isPlaying && (
-                        <div style={{
-                            position: 'absolute',
-                            top: 0,
-                            left: 0,
-                            width: '100%',
-                            height: '100%',
-                            background: 'transparent',
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            zIndex: 2
-                        }}>
-                            <div style={{
-                                width: '80px',
-                                height: '80px',
-                                background: 'var(--color-accent)',
-                                borderRadius: '50%',
-                                display: 'flex',
-                                alignItems: 'center',
-                                justifyContent: 'center',
-                                boxShadow: '0 0 30px var(--color-accent)',
-                                transition: 'transform 0.2s ease'
-                            }}
-                                onMouseEnter={(e) => e.currentTarget.style.transform = 'scale(1.1)'}
-                                onMouseLeave={(e) => e.currentTarget.style.transform = 'scale(1)'}
-                            >
-                                <div style={{
-                                    width: 0,
-                                    height: 0,
-                                    borderTop: '15px solid transparent',
-                                    borderBottom: '15px solid transparent',
-                                    borderLeft: '25px solid white',
-                                    marginLeft: '8px'
-                                }}></div>
-                            </div>
-                        </div>
-                    )}
+                    background: '#000'
+                }}>
+                    <iframe
+                        src="https://player.vimeo.com/video/1166598857?badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479"
+                        style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%' }}
+                        frameBorder="0"
+                        allow="autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media; web-share"
+                        referrerPolicy="strict-origin-when-cross-origin"
+                        title="KO VSL"
+                    ></iframe>
                 </div>
 
                 <button
