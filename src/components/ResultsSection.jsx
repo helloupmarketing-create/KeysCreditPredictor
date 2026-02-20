@@ -3,7 +3,7 @@ import React from 'react';
 const ResultsSection = () => {
     const results = [
         {
-            image: "/results/results 1.png",
+            image: "/results/results 3.png",
             title: "Score Boost & Deletions",
             desc: "80+ Point increase across all bureaus with 10 deletions."
         },
@@ -13,7 +13,7 @@ const ResultsSection = () => {
             desc: "Client reached Excellent credit status with massive point gains."
         },
         {
-            image: "/results/results 3.png",
+            image: "/results/results 1.png",
             title: "Fast Fair Credit Leap",
             desc: "155 Point jump to reach Fair credit in record time."
         }
