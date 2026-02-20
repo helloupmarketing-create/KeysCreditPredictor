@@ -4,11 +4,10 @@ const HeroVSL = ({ onStart }) => {
     const [isPlaying, setIsPlaying] = useState(false);
 
     const handlePlay = () => {
-        const iframe = document.querySelector('iframe[title="KO VSL"]');
+        const iframe = document.querySelector('iframe[title="YouTube VSL"]');
         if (iframe) {
-            iframe.contentWindow.postMessage('{"method":"setVolume", "value":1}', '*');
-            iframe.contentWindow.postMessage('{"method":"setMuted", "value":false}', '*');
-            iframe.contentWindow.postMessage('{"method":"play"}', '*');
+            // YouTube API command to play video
+            iframe.contentWindow.postMessage('{"event":"command","func":"playVideo","args":""}', '*');
             setIsPlaying(true);
         }
     };
@@ -43,7 +42,7 @@ const HeroVSL = ({ onStart }) => {
                     Watch how our AI-driven analysis helps you identify exactly what's holding your score back and how to fix it fast.
                 </p>
 
-                {/* Vimeo Embed with Custom Overlay */}
+                {/* YouTube Embed with Custom Overlay */}
                 <div style={{
                     position: 'relative',
                     width: '100%',
@@ -56,12 +55,15 @@ const HeroVSL = ({ onStart }) => {
                     background: '#000'
                 }}>
                     <iframe
-                        src="https://player.vimeo.com/video/1166598857?badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479&amp;title=0&amp;byline=0&amp;portrait=0&amp;controls=1&amp;share=0&amp;pip=0&amp;fullscreen=0&amp;muted=0"
-                        style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%' }}
+                        width="100%"
+                        height="100%"
+                        src="https://www.youtube.com/embed/_Q0eE7MsKKY?si=ks32E4k0Fgq1gQik&amp;controls=1&amp;rel=0&amp;modestbranding=1&amp;enablejsapi=1"
+                        title="YouTube VSL"
                         frameBorder="0"
-                        allow="autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media; web-share"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                         referrerPolicy="strict-origin-when-cross-origin"
-                        title="KO VSL"
+                        allowFullScreen
+                        style={{ position: 'absolute', top: 0, left: 0 }}
                     ></iframe>
 
                     {!isPlaying && (
