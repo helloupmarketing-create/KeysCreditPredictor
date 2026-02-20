@@ -6,6 +6,7 @@ const HeroVSL = ({ onStart }) => {
     const handlePlay = () => {
         const iframe = document.querySelector('iframe[title="KO VSL"]');
         if (iframe) {
+            iframe.contentWindow.postMessage('{"method":"setVolume", "value":1}', '*');
             iframe.contentWindow.postMessage('{"method":"play"}', '*');
             setIsPlaying(true);
         }
