@@ -6,7 +6,36 @@ const HeroVSL = ({ onStart }) => {
     const [duration, setDuration] = useState(0);
     const [volume, setVolume] = useState(100);
     const [isMuted, setIsMuted] = useState(false);
+    const [showControls, setShowControls] = useState(true);
     const iframeRef = useRef(null);
+    const controlsTimeoutRef = useRef(null);
+
+    // Auto-hide controls logic
+    const resetControlsTimer = () => {
+        setShowControls(true);
+        if (controlsTimeoutRef.current) clearTimeout(controlsTimeoutRef.current);
+
+        if (isPlaying) {
+            controlsTimeoutRef.current = setTimeout(() => {
+                setShowControls(false);
+            }, 3000);
+        }
+    };
+
+    useEffect(() => {
+        if (isPlaying) {
+            resetControlsTimer();
+        } else {
+            setShowControls(true);
+            if (controlsTimeoutRef.current) clearTimeout(controlsTimeoutRef.current);
+        }
+    }, [isPlaying]);
+
+    useEffect(() => {
+        return () => {
+            if (controlsTimeoutRef.current) clearTimeout(controlsTimeoutRef.current);
+        };
+    }, []);
 
     // Call YouTube API via postMessage
     const callPlayer = (func, args = []) => {
@@ -31,12 +60,14 @@ const HeroVSL = ({ onStart }) => {
             }
         }
         setIsPlaying(!isPlaying);
+        resetControlsTimer();
     };
 
     const handleSeek = (e) => {
         const time = parseFloat(e.target.value);
         callPlayer('seekTo', [time, true]);
         setCurrentTime(time);
+        resetControlsTimer();
     };
 
     const handleVolumeChange = (e) => {
@@ -47,6 +78,7 @@ const HeroVSL = ({ onStart }) => {
             setIsMuted(false);
             callPlayer('unMute');
         }
+        resetControlsTimer();
     };
 
     const toggleMute = () => {
@@ -57,6 +89,7 @@ const HeroVSL = ({ onStart }) => {
             callPlayer('mute');
             setIsMuted(true);
         }
+        resetControlsTimer();
     };
 
     // Listen for events from YouTube
@@ -136,17 +169,20 @@ const HeroVSL = ({ onStart }) => {
                 </p>
 
                 {/* Custom Video Player Container */}
-                <div style={{
-                    position: 'relative',
-                    width: '100%',
-                    maxWidth: '800px',
-                    aspectRatio: '16/9',
-                    margin: '0 auto 40px',
-                    borderRadius: '20px',
-                    overflow: 'hidden',
-                    boxShadow: '0 20px 50px rgba(0,0,0,0.15)',
-                    background: '#000'
-                }}>
+                <div
+                    onMouseMove={resetControlsTimer}
+                    onClick={resetControlsTimer}
+                    style={{
+                        position: 'relative',
+                        width: '100%',
+                        maxWidth: '800px',
+                        aspectRatio: '16/9',
+                        margin: '0 auto 40px',
+                        borderRadius: '20px',
+                        overflow: 'hidden',
+                        boxShadow: '0 20px 50px rgba(0,0,0,0.15)',
+                        background: '#000'
+                    }}>
                     <iframe
                         ref={iframeRef}
                         width="150%"
@@ -234,7 +270,11 @@ const HeroVSL = ({ onStart }) => {
                         alignItems: 'center',
                         gap: '15px',
                         zIndex: 20,
-                        borderTop: '1px solid rgba(255,255,255,0.1)'
+                        borderTop: '1px solid rgba(255,255,255,0.1)',
+                        opacity: showControls ? 1 : 0,
+                        transform: showControls ? 'translateY(0)' : 'translateY(10px)',
+                        transition: 'opacity 0.5s ease, transform 0.5s ease',
+                        pointerEvents: showControls ? 'auto' : 'none'
                     }}>
                         <button
                             onClick={togglePlay}
