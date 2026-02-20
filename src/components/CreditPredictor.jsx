@@ -154,9 +154,10 @@ const CreditPredictor = () => {
                         }
                     });
 
-                    // Track Lead Event (if pixel exists)
+                    // Track Lead & SubmitApplication Events (if pixel exists)
                     if (window.fbq) {
                         window.fbq('track', 'Lead');
+                        window.fbq('track', 'SubmitApplication');
                     }
                 }
 
