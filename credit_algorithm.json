@@ -1,0 +1,104 @@
+{
+    "algorithm_name": "Keys Credit Predictor - Full System Logic",
+    "version": "1.1.0",
+    "last_updated": "2026-02-20",
+    "input_schema": {
+        "step_1_contact": {
+            "firstName": "string (required)",
+            "lastName": "string (required)",
+            "email": "string (required)",
+            "emailConsent": "boolean (required to proceed)"
+        },
+        "step_2_profile": {
+            "currentScore": "number (range 300-850)",
+            "negativeItems": "array of strings",
+            "available_negative_items": [
+                "Collections",
+                "Charge Offs",
+                "Late Payments",
+                "Inquiries",
+                "Bankruptcy",
+                "Repos",
+                "Child Support",
+                "High Balances"
+            ]
+        },
+        "step_3_goals": {
+            "goal": [
+                "Buy a Home",
+                "Lower Interest Rates",
+                "Buy a Car",
+                "General Improvement"
+            ],
+            "homeBuyerDetails": {
+                "condition": "Only if goal is 'Buy a Home'",
+                "options": [
+                    "Arizona (I have a realtor)",
+                    "Arizona (I don't have a Realtor)",
+                    "California",
+                    "Other State"
+                ]
+            }
+        }
+    },
+    "logic_engine": {
+        "scoring_impacts": {
+            "COLLECTIONS": 30,
+            "CHARGE_OFFS": 25,
+            "LATE_PAYMENTS": 15,
+            "INQUIRIES": 4,
+            "BANKRUPTCY": 50,
+            "REPOS": 30,
+            "CHILD_SUPPORT": 20,
+            "HIGH_BALANCES": 15,
+            "FORECLOSURES": 40,
+            "JUDGMENTS": 35
+        },
+        "disqualification_rules": {
+            "standard_rule": "If negativeItems contains ONLY ['LATE_PAYMENTS', 'HIGH_BALANCES'], user is disqualified.",
+            "exemption_logic": {
+                "exempt_groups": [
+                    "Arizona Homebuyers",
+                    "California Homebuyers"
+                ],
+                "behavior": "NEVER disqualified. If standard rules apply, force a default +40 point increase."
+            },
+            "disqualified_message": "Based on the items selected (Late Payments / High Balances only), we are unable to assist at this time as these are typically not removable."
+        },
+        "timeframe_calculation": {
+            "base_months": 3,
+            "modifiers": [
+                {
+                    "condition": "Contains 'Bankruptcy' or 'Repo'",
+                    "add": 3
+                },
+                {
+                    "condition": "Contains 'Collections' AND total increase > 60",
+                    "add": 2
+                }
+            ],
+            "display_format": "{calculated_months} to {calculated_months + 3} months"
+        }
+    },
+    "pricing_engine": {
+        "tier_1_free": {
+            "condition": "Goal: 'Buy a Home' AND Details: 'Arizona (I don't have a Realtor)'",
+            "price": "$0 / FREE"
+        },
+        "tier_2_advanced": {
+            "condition": "Contains any: ['Bankruptcy', 'Foreclosures', 'Repos', 'Child Support', 'Judgments']",
+            "price": "$2,100 - $3,000 (One-time)"
+        },
+        "tier_3_popular": {
+            "condition": "4 or more negative items selected",
+            "price": "$1,500 - $2,000 (One-time)"
+        },
+        "tier_4_basic": {
+            "condition": "All other cases",
+            "price": "$1,000 - $1,400 (One-time)"
+        }
+    },
+    "integration_logic": {
+        "submit_to_crm": "ONLY if (User is NOT Arizona Buyer with Realtor) AND (User is NOT Disqualified)"
+    }
+}

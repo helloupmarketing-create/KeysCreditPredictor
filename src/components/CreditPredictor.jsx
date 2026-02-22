@@ -231,8 +231,11 @@ const CreditPredictor = () => {
                         name="currentScore"
                         value={formData.currentScore}
                         onChange={handleInputChange}
-                        style={{ marginBottom: '30px' }}
+                        style={{ marginBottom: '10px' }}
                     />
+                    <small style={{ display: 'block', color: '#888', marginBottom: '30px', fontSize: '12px' }}>
+                        *Entering your score here is for estimation only and will NOT affect your credit.
+                    </small>
 
                     <p>What's holding you back? (Select all that apply)</p>
                     <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>

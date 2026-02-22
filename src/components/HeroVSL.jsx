@@ -364,7 +364,7 @@ const HeroVSL = ({ onStart }) => {
                 </button>
 
                 <p style={{ marginTop: '20px', color: '#888', fontSize: '0.9rem' }}>
-                    No credit card required • Secure AI analysis • Results in under 2 minutes
+                    No credit card required • No effect on your credit score • Secure AI analysis
                 </p>
             </div>
         </section>
